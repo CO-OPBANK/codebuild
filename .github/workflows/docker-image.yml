@@ -4,7 +4,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-    
+
 env:
   PROJECT_ID: ${{ secrets.IMAGES_PROJECT_ID }}
   GITHUB_AUTH: ${{ secrets.AUTH_TOKEN }}
@@ -17,7 +17,7 @@ env:
   GITHUB_HEAD_COMMIT: ${{ github.event.head_commit.url}}
   GITHUB_MESG: ${{ github.event.head_commit.message }}
   GITHUB_COMPARE: ${{ github.event.compare }}
-  
+
 jobs:
 
   build:
@@ -37,10 +37,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -    
-        name: Build the Docker image
-        run: docker build -t codebuild:$(date +%s)_dev
-      -  
-       name: Push Docker image to dockerhub
-       run: docker push codebuild:$(date +%s)_dev
-       
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: user/app:latest
